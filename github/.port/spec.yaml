@@ -1,0 +1,21 @@
+title: Github
+description: GitHub integration for Port Ocean
+icon: GitHub
+features:
+  - type: exporter
+    section: Git Providers
+    resources:
+      - kind: organization
+      - kind: repository
+      - kind: pull_request
+configurations:
+  - name: accessToken
+    required: false
+    type: string
+    sensitive: true
+    description: Access token for the GitHub API. If not provided, the GitHub API will be accessed anonymously. See the <a target="_blank" href= "https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28">GitHub Authentication Documentation</a>
+  - name: baseUrl
+    type: url
+    required: false
+    default: https://api.github.com
+    description: Base URL for the GitHub API. If not provided, the default GitHub API URL, https://api.github.com will be used.

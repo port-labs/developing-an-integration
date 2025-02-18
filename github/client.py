@@ -29,7 +29,12 @@ class GitHubClient:
         self.access_token = access_token
         self.http_client = http_async_client
         self.http_client.headers.update(self.headers)
-        self.limiter = self.rate_limiter
+        time_period = 60 * 60  # 1 hour in seconds
+        self.rate_limiter = AsyncLimiter((
+            self.REQUEST_LIMIT_AUTHENTICATED
+            if self.access_token
+            else self.REQUEST_LIMIT_UNAUTHENTICATED
+        ), time_period)
 
     @property
     def headers(self) -> dict[str, str]:
@@ -41,13 +46,6 @@ class GitHubClient:
             initial_headers["Authorization"] = f"Bearer {self.access_token}"
 
         return initial_headers
-
-    @property
-    def rate_limiter(self) -> AsyncLimiter:
-        time_period = 60 * 60  # 1 hour in seconds
-        if self.access_token:
-            return AsyncLimiter(self.REQUEST_LIMIT_AUTHENTICATED, time_period)
-        return AsyncLimiter(self.REQUEST_LIMIT_UNAUTHENTICATED, time_period)
 
     def _get_next_page_url(self, response: httpx.Headers) -> str | None:
         link: str = response.get("Link", None)
@@ -65,7 +63,7 @@ class GitHubClient:
     async def _send_api_request(
         self, url: str, params: dict[str, Any] | None = None
     ) -> httpx.Response:
-        async with self.limiter:
+        async with self.rate_limiter:
             logger.info(f"Making request to {url} with params: {params}")
             try:
                 response = await self.http_client.get(url, params=params)

@@ -24,7 +24,7 @@ class GitHubClient:
 
     def __init__(
         self, base_url: str = "https://api.github.com", access_token: str | None = None
-    ):
+    ) -> None:
         self.base_url = base_url
         self.access_token = access_token
         self.http_client = http_async_client

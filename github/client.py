@@ -30,11 +30,14 @@ class GitHubClient:
         self.http_client = http_async_client
         self.http_client.headers.update(self.headers)
         time_period = 60 * 60  # 1 hour in seconds
-        self.rate_limiter = AsyncLimiter((
-            self.REQUEST_LIMIT_AUTHENTICATED
-            if self.access_token
-            else self.REQUEST_LIMIT_UNAUTHENTICATED
-        ), time_period)
+        self.rate_limiter = AsyncLimiter(
+            (
+                self.REQUEST_LIMIT_AUTHENTICATED
+                if self.access_token
+                else self.REQUEST_LIMIT_UNAUTHENTICATED
+            ),
+            time_period,
+        )
 
     @property
     def headers(self) -> dict[str, str]:

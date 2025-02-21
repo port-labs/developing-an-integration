@@ -1,17 +1,16 @@
 from typing import cast
 
-from loguru import logger
-from port_ocean.context.event import event
-from port_ocean.context.ocean import ocean
-from port_ocean.core.ocean_types import ASYNC_GENERATOR_RESYNC_TYPE
-
 from client import GitHubClient
 from integration import (
-    GitHubOranizationResourceConfig,
+    GitHubOrganizationResourceConfig,
     GitHubPullRequestResourceConfig,
     GitHubRepositoryResourceConfig,
     ObjectKind,
 )
+from loguru import logger
+from port_ocean.context.event import event
+from port_ocean.context.ocean import ocean
+from port_ocean.core.ocean_types import ASYNC_GENERATOR_RESYNC_TYPE
 
 
 def initialize_github_client() -> GitHubClient:
@@ -24,7 +23,7 @@ def initialize_github_client() -> GitHubClient:
 @ocean.on_resync(ObjectKind.ORGANIZATION)
 async def get_organizations(kind: str) -> ASYNC_GENERATOR_RESYNC_TYPE:
     client = initialize_github_client()
-    selector = cast(GitHubOranizationResourceConfig, event.resource_config).selector
+    selector = cast(GitHubOrganizationResourceConfig, event.resource_config).selector
     logger.info(f"Retrieving organizations: {selector.organizations}")
     organizations = await client.get_organizations(selector.organizations)
     logger.info(f"Retrieved organization batch of size: {len(organizations)}")

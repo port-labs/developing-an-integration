@@ -23,7 +23,7 @@ class OrganizationSelector(Selector):
     )
 
 
-class RespositorySelector(Selector):
+class RepositorySelector(Selector):
     organizations: list[str] = Field(
         description="List of organizations to retrieve repositories from",
         default_factory=list,
@@ -50,13 +50,13 @@ class PullRequestSelector(Selector):
     )
 
 
-class GitHubOranizationResourceConfig(ResourceConfig):
+class GitHubOrganizationResourceConfig(ResourceConfig):
     selector: OrganizationSelector
     kind: Literal["organization"]
 
 
 class GitHubRepositoryResourceConfig(ResourceConfig):
-    selector: RespositorySelector
+    selector: RepositorySelector
     kind: Literal["repository"]
 
 
@@ -67,7 +67,7 @@ class GitHubPullRequestResourceConfig(ResourceConfig):
 
 class GitHubPortAppConfig(PortAppConfig):
     resources: list[
-        GitHubOranizationResourceConfig
+        GitHubOrganizationResourceConfig
         | GitHubRepositoryResourceConfig
         | GitHubPullRequestResourceConfig
         | ResourceConfig
